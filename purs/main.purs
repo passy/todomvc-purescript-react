@@ -36,7 +36,7 @@ exampleItems =
 
 todoList = mkUI spec do
   -- TODO: Write a helper for converting [(String, Bool)] -> [ClassName]
-  let todoItems = flip map exampleItems (\i ->
+  let todoItems = (\i ->
     let checked' = if i.completed then "checked" else ""
         class' = if i.completed then "completed" else "" in
       li [ className class' ]
@@ -52,7 +52,7 @@ todoList = mkUI spec do
           [ className "edit"
           , value i.todo
           ] []
-        ])
+        ]) <$> exampleItems
   pure $ ul [ idProp "todo-list" ] todoItems
 
 todoMain = mkUI spec do
