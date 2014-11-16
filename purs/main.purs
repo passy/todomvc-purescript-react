@@ -2,6 +2,7 @@ module Main where
 
 import Control.Monad.Eff
 import Debug.Trace (trace)
+import Data.Array (map)
 import React
 import React.DOM
 
@@ -15,13 +16,41 @@ todoHeader = mkUI spec do
       ] []
     ]
 
-helloWorld :: { what :: String } -> React.UI
-helloWorld = mkUI spec do
-  props <- getProps
-  pure $ h1 [className "hello"] [
-      text $ "Hello, " ++ props.what
+exampleItems =
+  [ { id: 0
+    , todo: "Go to Paris"
+    , editing: false
+    },
+    { id: 1
+    , todo: "Write PureScript TodoMVC"
+    , editing: false
+    },
+    { id: 2
+    , todo: "Find the Hotel"
+    , editing: true
+    }
+  ]
+
+todoList = mkUI spec do
+  let todoItems = flip map exampleItems (\i -> li [] [ text i.todo ])
+  pure $ ul [ idProp "todo-list" ] todoItems
+
+todoMain = mkUI spec do
+  pure $ section [ idProp "main" ]
+    [ input
+      [ idProp "toggle-all"
+      , typeProp "checkbox"
+      ] []
+    , todoList []
     ]
+
+-- Only temporarily
+renderUI el = mkUI spec el []
 
 main :: Eff (dom :: React.DOM) React.UI
 main = do
-  renderToElementById "todoapp" $ todoHeader []
+  renderToElementById "todoapp" $ renderUI do
+    pure $ div'
+      [ todoHeader []
+      , todoMain []
+      ]
