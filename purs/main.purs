@@ -20,19 +20,39 @@ exampleItems =
   [ { id: 0
     , todo: "Go to Paris"
     , editing: false
+    , completed: true
     },
     { id: 1
     , todo: "Write PureScript TodoMVC"
     , editing: false
+    , completed: false
     },
     { id: 2
     , todo: "Find the Hotel"
     , editing: true
+    , completed: false
     }
   ]
 
 todoList = mkUI spec do
-  let todoItems = flip map exampleItems (\i -> li [] [ text i.todo ])
+  -- TODO: Write a helper for converting [(String, Bool)] -> [ClassName]
+  let todoItems = flip map exampleItems (\i ->
+    let checked' = if i.completed then "checked" else ""
+        class' = if i.completed then "completed" else "" in
+      li [ className class' ]
+        [ div [ className "view" ]
+          [ input
+              [ className "toggle"
+              , typeProp "checkbox"
+              , checked checked'
+              ] []
+          , label' [ text i.todo ]
+          ]
+        , input
+          [ className "edit"
+          , value i.todo
+          ] []
+        ])
   pure $ ul [ idProp "todo-list" ] todoItems
 
 todoMain = mkUI spec do
@@ -44,6 +64,14 @@ todoMain = mkUI spec do
     , todoList []
     ]
 
+todoFooter = mkUI spec do
+  pure $ footer [ idProp "footer" ]
+    [ span [ idProp "todo-count" ]
+      [ strong' [ text "0" ]
+      , text " item(s) left"
+      ]
+    ]
+
 -- Only temporarily
 renderUI el = mkUI spec el []
 
@@ -53,4 +81,5 @@ main = do
     pure $ div'
       [ todoHeader []
       , todoMain []
+      , todoFooter []
       ]
