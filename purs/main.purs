@@ -34,26 +34,28 @@ exampleItems =
     }
   ]
 
-todoList = mkUI spec do
-  -- TODO: Write a helper for converting [(String, Bool)] -> [ClassName]
-  let todoItems = (\i ->
-    let checked' = if i.completed then "checked" else ""
-        class' = if i.completed then "completed" else "" in
-      li [ className class' ]
-        [ div [ className "view" ]
-          [ input
-              [ className "toggle"
-              , typeProp "checkbox"
-              , checked checked'
-              ] []
-          , label' [ text i.todo ]
-          ]
-        , input
-          [ className "edit"
-          , value i.todo
-          ] []
-        ]) <$> exampleItems
-  pure $ ul [ idProp "todo-list" ] todoItems
+todoList = mkUI spec {
+    getInitialState = return exampleItems
+  } do
+    state <- readState
+    let todoItems = (\i ->
+      let checked' = if i.completed then "checked" else ""
+          class' = if i.completed then "completed" else "" in
+        li [ className class' ]
+          [ div [ className "view" ]
+            [ input
+                [ className "toggle"
+                , typeProp "checkbox"
+                , checked checked'
+                ] []
+            , label' [ text i.todo ]
+            ]
+          , input
+            [ className "edit"
+            , value i.todo
+            ] []
+          ]) <$> state
+    pure $ ul [ idProp "todo-list" ] todoItems
 
 todoMain = mkUI spec do
   pure $ section [ idProp "main" ]
