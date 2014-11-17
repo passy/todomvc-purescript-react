@@ -34,10 +34,8 @@ exampleItems =
     }
   ]
 
-todoList = mkUI spec {
-    getInitialState = return exampleItems
-  } do
-    state <- readState
+todoList = mkUI spec do
+    props <- getProps
     let todoItems = (\i ->
       let checked' = if i.completed then "checked" else ""
           class' = if i.completed then "completed" else "" in
@@ -54,17 +52,20 @@ todoList = mkUI spec {
             [ className "edit"
             , value i.todo
             ] []
-          ]) <$> state
+          ]) <$> props.items
     pure $ ul [ idProp "todo-list" ] todoItems
 
-todoMain = mkUI spec do
-  pure $ section [ idProp "main" ]
-    [ input
-      [ idProp "toggle-all"
-      , typeProp "checkbox"
-      ] []
-    , todoList []
-    ]
+todoMain = mkUI spec {
+    getInitialState = return { items: exampleItems }
+  } do
+    state <- readState
+    pure $ section [ idProp "main" ]
+      [ input
+        [ idProp "toggle-all"
+        , typeProp "checkbox"
+        ] []
+        , todoList { items: state.items }
+      ]
 
 todoFooter = mkUI spec do
   pure $ footer [ idProp "footer" ]
