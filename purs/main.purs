@@ -1,20 +1,34 @@
 module Main where
 
 import Control.Monad.Eff
-import Debug.Trace (trace)
+import Debug.Trace (trace, Trace())
 import Data.Array (map)
 import React
 import React.DOM
+
+enterKeyCode :: Number
+enterKeyCode = 13
 
 todoHeader = mkUI spec do
   pure $ header [ idProp "header" ]
     [ h1' [ text "todos" ]
     , input
       [ idProp "new-todo"
+      , ref "newField"
       , placeholder "What needs to be done?"
       , autoFocus "true"
+      , onKeyDown submitNewTodo
       ] []
     ]
+  where
+    submitNewTodo :: forall a b. KeyboardEvent -> Eff (trace :: Trace, refs :: ReactRefs b | a) Unit
+    submitNewTodo e = do
+      refs <- getRefs
+      -- TODO: UGLY!! guard? Control.Monad.when?
+      if e.keyCode == enterKeyCode
+         then trace "hi"
+         else pure unit
+
 
 exampleItems =
   [ { id: 0
