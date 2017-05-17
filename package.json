@@ -20,8 +20,8 @@
   },
   "homepage": "https://github.com/passy/todomvc-purescript-react",
   "devDependencies": {
-    "del": "^0.1.3",
+    "del": "^2.2.2",
     "gulp": "^3.8.10",
-    "gulp-purescript": "0.0.12"
+    "gulp-purescript": "2.0.0"
   }
 }
