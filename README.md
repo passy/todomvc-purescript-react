@@ -1,6 +1,8 @@
 todomvc-purescript-react
 ========================
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/passy/todomvc-purescript-react.svg)](https://greenkeeper.io/)
+
 Nothing to see here, move along!
 
 Requirements
